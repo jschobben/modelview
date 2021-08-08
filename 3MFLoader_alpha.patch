@@ -1,0 +1,70 @@
+--- three.js/examples/jsm/loaders/3MFLoader.js.ref	2021-07-26 01:04:58.408999530 +0200
++++ three.js/examples/jsm/loaders/3MFLoader.js	2021-07-26 01:12:16.725813819 +0200
+@@ -373,7 +373,16 @@
+ 				colorObject.setStyle( color.substring( 0, 7 ) );
+ 				colorObject.convertSRGBToLinear(); // color is in sRGB
+ 
+-				colors.push( colorObject.r, colorObject.g, colorObject.b );
++				// process alpha if set
++
++				var alpha = 1.0;
++				if ( color.length === 9 ) {
++
++					alpha = parseInt( color.charAt( 7 ) + color.charAt( 8 ), 16 ) / 255;
++
++				}
++
++				colors.push( colorObject.r, colorObject.g, colorObject.b, alpha );
+ 
+ 			}
+ 
+@@ -1042,17 +1051,17 @@
+ 				const p2 = ( triangleProperty.p2 !== undefined ) ? triangleProperty.p2 : p1;
+ 				const p3 = ( triangleProperty.p3 !== undefined ) ? triangleProperty.p3 : p1;
+ 
+-				colorData.push( colors[ ( p1 * 3 ) + 0 ] );
+-				colorData.push( colors[ ( p1 * 3 ) + 1 ] );
+-				colorData.push( colors[ ( p1 * 3 ) + 2 ] );
+-
+-				colorData.push( colors[ ( p2 * 3 ) + 0 ] );
+-				colorData.push( colors[ ( p2 * 3 ) + 1 ] );
+-				colorData.push( colors[ ( p2 * 3 ) + 2 ] );
+-
+-				colorData.push( colors[ ( p3 * 3 ) + 0 ] );
+-				colorData.push( colors[ ( p3 * 3 ) + 1 ] );
+-				colorData.push( colors[ ( p3 * 3 ) + 2 ] );
++				colorData.push( colors[ ( p1 * 4 ) + 0 ] );
++				colorData.push( colors[ ( p1 * 4 ) + 1 ] );
++				colorData.push( colors[ ( p1 * 4 ) + 2 ] );
++
++				colorData.push( colors[ ( p2 * 4 ) + 0 ] );
++				colorData.push( colors[ ( p2 * 4 ) + 1 ] );
++				colorData.push( colors[ ( p2 * 4 ) + 2 ] );
++
++				colorData.push( colors[ ( p3 * 4 ) + 0 ] );
++				colorData.push( colors[ ( p3 * 4 ) + 1 ] );
++				colorData.push( colors[ ( p3 * 4 ) + 2 ] );
+ 
+ 			}
+ 
+@@ -1063,6 +1072,20 @@
+ 
+ 			const material = new MeshPhongMaterial( { vertexColors: true, flatShading: true } );
+ 
++			// Just use the average of all alpha values for now
++			var alpha_sum = 0.0;
++			for ( let i = 0, l = colors.length; i < l; i += 4 ) {
++				alpha_sum += colors[ i + 3 ];
++			}
++			const alpha = alpha_sum / ( colors.length / 4 );
++
++			if ( alpha !== 1.0 ) {
++
++				material.transparent = true;
++				material.opacity = alpha;
++
++			}
++
+ 			// mesh
+ 
+ 			const mesh = new Mesh( geometry, material );
