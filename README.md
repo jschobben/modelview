@@ -26,6 +26,12 @@ python3 -m http.server 8000 --bind 127.0.0.1
 ```
 Then, point your browser at `http://localhost:8000`.
 
+Single model
+------------
+
+For an example of how to use a single, fixed, server-side model, see [single_file.htm](single_file.htm); edit the `const file =` line as needed.
+[See it in action here](https://jschobben.github.io/modelview/single_file.htm).
+
 Usage
 -----
 

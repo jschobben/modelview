@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add single-file example (single_file.htm).
+
 ## [0.0.1] - 2021-08-08
 
 ### Added

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=0.7, maximum-scale=0.7">
+
+		<style>
+			html {
+				height: 100%;
+			}
+
+			body {
+				height: 100%;
+				overflow: hidden;
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+	</head>
+	<body scroll="no">
+		<div style="position: absolute; margin: 5px; background-color: #ffffff80; z-index: 1">
+			<span id="info" style="margin: 0px; padding:5px" />
+		</div>
+		<div id="viewer" style="position: relative; width: 100%; height: 100%; z-index: 0" />
+
+		<script type="module">
+			import * as View from './modelview.js';
+
+			View.init(document.getElementById('viewer'), document.getElementById('info'));
+
+			// Put your server-side filename here
+			const file = 'colors.3mf';
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.responseType = 'arraybuffer';
+			xhttp.onload = function() {
+				if (this.status != 200) {
+					console.log("Download of", file, "failed:", this.status, this.statusText);
+					return;
+				}
+				console.log("Downloaded:", file);
+				var file_parts = file.split(".");
+				var ext = file_parts.pop().toLowerCase();
+				if (ext == "zip") {
+					ext = file_parts.pop().toLowerCase();
+				}
+				console.log("Loaded file with extension:", ext);
+				var model_data = this.response;
+				View.view(ext, model_data);
+			};
+			console.log("Fetching:", file);
+			xhttp.open("GET", file);
+			xhttp.send();
+		</script>
+	</body>
+</html>
